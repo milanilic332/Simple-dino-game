@@ -71,6 +71,9 @@ class Player:
             self.check_duck()
         elif action == 'w':
             self.check_jump()
+        elif self.ducking_param is False and self.jumping_param is False:
+            pos = self.canvas.coords(self.id)
+            self.canvas.move(self.id, 0, 125 - pos[1])
         self.duck()
         self.jump()
         self.canvas.move(self.id, 0, self.y)

@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 import random
 import time
-from chrome_game.objects import Player, Floor, Obstacle
+from objects import Player, Floor, Obstacle
 
 
 class Game:
@@ -28,7 +28,6 @@ class Game:
         self.frame_number = 0
 
     def next_frame(self, action):
-        time.sleep(0.01)
         done = False
         # Do we have to remove the first obstacle from obstacles
         elim = False
@@ -38,7 +37,7 @@ class Game:
         drawing = ImageDraw.Draw(img)
 
         # Creating new random obstacle and change speed of the game
-        if self.frame_number%40 == 0:
+        if self.frame_number % 40 == 0:
             if self.current_speed < 25:
                 self.current_speed += 0.5
             else:
@@ -82,7 +81,7 @@ class Game:
 
         return np.array(img)[:175, :], done
 
-    def reset(self):
+    def reset(self, mode='easy'):
         # Reseting player and params
         self.player.reset()
         self.frame_number = 0
@@ -94,10 +93,10 @@ class Game:
         self.obstacles = []
 
         # Getting start frame (first action is jump)
-        start_frame, _, _ = self.step('n')
+        start_frame, _, _ = self.step('n', mode)
         return start_frame
 
-    def step(self, action):
+    def step(self, action, mode='easy'):
         # Get params of the next frame
         cur_x, done = self.next_frame(action)
 
@@ -109,6 +108,9 @@ class Game:
 
         # Increment frame_number (score)
         self.frame_number += 1
+
+        if mode == 'hard':
+            return cur_x, done, reward
 
         # Players current position
         pos_player = self.player.get_coords()
